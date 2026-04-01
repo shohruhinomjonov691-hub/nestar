@@ -1,5 +1,26 @@
 // MIT TASK
 /*
+TASK-ZK:
+
+Shunday function yozing, u har soniyada bir marta 
+consolega 1 dan 5 gacha bolgan raqamlarni chop etsin 
+va 5 soniyadan keyin ishini toxtatsin.
+MASALAN: printNumbers()
+*/
+/*Masalani yechimi */
+function printNumbers() {
+	let count = 1;
+	const intervalId = setInterval(() => {
+		console.log(count);
+		count++;
+		if (count > 5) {
+			clearInterval(intervalId);
+		}
+	}, 1000);
+}
+
+printNumbers();	
+/*
  TASK ZJ:
 
  Shunday function yozing, u berilgan array ichidagi
@@ -11,7 +32,7 @@
  bizning function ularning yig'indisini hisoblab qaytarmoqda.
 */
 
-/*Masalani yechimi  */
+/*Masalani yechimi 
 function reduceNestedArray(arr: any[]): number {
 	let sum = 0;
 
@@ -29,3 +50,4 @@ function reduceNestedArray(arr: any[]): number {
 console.log(reduceNestedArray([1, [1, 2, [4]]]));
 console.log(reduceNestedArray([1, 2, [1, 2, [4, 5]], 3, 4]));
 console.log(reduceNestedArray([1, [1, 2, 3, [4]]]));
+*/
