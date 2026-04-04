@@ -11,11 +11,13 @@ export class MemberResolver {
 		return this.memberService.signup();
 	}
 
+	@Mutation(() => String)
 	public async login(): Promise<string> {
 		console.log('Mutation: login');
 		return this.memberService.login();
 	}
 
+	@Mutation(() => String)
 	public async updateMember(): Promise<string> {
 		console.log('Mutation: updateMember');
 		return this.memberService.updateMember();
