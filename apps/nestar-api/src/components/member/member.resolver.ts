@@ -19,6 +19,7 @@ export class MemberResolver {
 		return this.memberService.login(input);
 	}
 
+	// Authenticated (USER, AGET, ADMIN)
 	@Mutation(() => String)
 	public async updateMember(): Promise<String> {
 		console.log('Mutation: updateMember');
@@ -29,5 +30,20 @@ export class MemberResolver {
 	public async getMember(): Promise<String> {
 		console.log('Query: getMember');
 		return this.memberService.getMember();
+	}
+
+	/** ADMIN **/
+
+	// Authorization: ADMIN
+	@Mutation(() => String)
+	public async getAllMembersByAdmin(): Promise<String> {
+		return this.memberService.getAllMembersByAdmin();
+	}
+
+	// Authorization: ADMIN
+	@Mutation(() => String)
+	public async updateMemberByAdmin(): Promise<String> {
+		console.log('Mutation: updateMemberByAdmin');
+		return this.memberService.updateMemberByAdmin();
 	}
 }
