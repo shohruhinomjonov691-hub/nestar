@@ -57,7 +57,7 @@ export class MemberResolver {
 	): Promise<Member> {
 		console.log('Mutation: updateMember');
 		const { _id, ...inputWithoutId } = input; // delete input._id
-		return await this.memberService.updateMember(memberId, { _id: memberId, ...inputWithoutId });
+		return await this.memberService.updateMember(memberId, { _id: memberId, ...inputWithoutId }); // (memberId, input)
 	}
 
 	@UseGuards(WithoutGuard)
@@ -135,7 +135,7 @@ export class MemberResolver {
 	): Promise<string[]> {
 		console.log('Mutation: imagesUploader');
 
-		const uploadedImages = [];
+		const uploadedImages: string[] = []; // : string[]
 		const promisedList = files.map(async (img: Promise<FileUpload>, index: number): Promise<Promise<void>> => {
 			try {
 				const { filename, mimetype, encoding, createReadStream } = await img;
