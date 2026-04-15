@@ -162,6 +162,6 @@ export class MemberResolver {
 		});
 
 		await Promise.all(promisedList);
-		return uploadedImages;
+		return uploadedImages.filter((url) => !!url);
 	}
 }
