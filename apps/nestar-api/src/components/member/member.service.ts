@@ -10,9 +10,9 @@ import { MemberUpdate } from '../../libs/dto/member/member.update';
 import { ViewService } from '../view/view.service';
 import { StatisticModifier, T } from '../../libs/types/common';
 import { ViewGroup } from '../../libs/enums/view.enum';
+import { LikeService } from '../like/like.service';
 import { LikeInput } from '../../libs/dto/like/like.input';
 import { LikeGroup } from '../../libs/enums/like.enum';
-import { LikeService } from '../like/like.service';
 
 @Injectable()
 export class MemberService {
@@ -37,18 +37,18 @@ export class MemberService {
 
 	public async login(input: LoginInput): Promise<Member> {
 		const { memberNick, memberPassword } = input;
-		const response = await this.memberModel.findOne({ memberNick: memberNick }).select('+memberPassword').exec();
+		const response: Member | null = await this.memberModel
+			.findOne({ memberNick: memberNick })
+			.select('+memberPassword')
+			.exec();
 
 		if (!response || response.memberStatus === MemberStatus.DELETE) {
 			throw new InternalServerErrorException(Message.NO_MEMBER_NICK);
 		} else if (response.memberStatus === MemberStatus.BLOCK) {
 			throw new InternalServerErrorException(Message.BLOCKED_USER);
-			// Just in case, but it should never happen because memberPassword is required
-		} else if (!response.memberPassword) {
-			throw new InternalServerErrorException(Message.WRONG_PASSWORD);
 		}
 
-		const isMatch = await this.authService.comparePasswords(input.memberPassword, response.memberPassword);
+		const isMatch = await this.authService.comparePasswords(input.memberPassword, response.memberPassword as string);
 		if (!isMatch) throw new InternalServerErrorException(Message.WRONG_PASSWORD);
 		response.accessToken = await this.authService.createToken(response);
 
@@ -83,19 +83,16 @@ export class MemberService {
 		if (!targetMember) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
 
 		if (memberId) {
-			// record view
-			const viewInput = {
-				memberId: memberId,
-				viewRefId: targetId,
-				viewGroup: ViewGroup.MEMBER,
-			};
+			const viewInput = { memberId: memberId, viewRefId: targetId, viewGroup: ViewGroup.MEMBER };
 			const newView = await this.viewService.recordView(viewInput);
 			if (newView) {
-				// increase memberView
 				await this.memberModel.findOneAndUpdate(search, { $inc: { memberViews: 1 } }, { new: true }).exec();
 				targetMember.memberViews++;
 			}
-			// meLiked
+
+			const likeInput = { memberId: memberId, likeRefId: targetId, likeGroup: LikeGroup.MEMBER };
+			targetMember.meLiked = await this.likeService.checkLikeExistence(likeInput);
+
 			// meFollowed
 		}
 
